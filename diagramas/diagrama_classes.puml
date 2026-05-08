@@ -1,0 +1,44 @@
+@startuml diagrama_classes
+title Sistema de Rede de Cinemas — Diagrama de Classes do Domínio
+
+skinparam classBackgroundColor #DEEAF1
+skinparam classBorderColor #1F4E79
+skinparam classHeaderBackgroundColor #1F4E79
+skinparam classHeaderFontColor #FFFFFF
+skinparam classFontSize 13
+skinparam ArrowColor #2E75B6
+skinparam ArrowThickness 2
+
+class Cinema {
+    id : int
+    nome : str
+    cidade : str
+    estado : str
+    capacidade : int
+}
+
+class Filme {
+    id : int
+    titulo : str
+    diretor : str
+    genero : str
+    duracao_min : int
+}
+
+class Sessao {
+    id : int
+    horario : str
+    sala : str
+    publico : int
+}
+
+Cinema "1" --o "0..*" Sessao : realiza >
+Filme "1" --o "0..*" Sessao : é exibido em >
+
+note bottom of Sessao
+  Cada sessão pertence a
+  exatamente um Cinema
+  e exibe um Filme.
+end note
+
+@enduml

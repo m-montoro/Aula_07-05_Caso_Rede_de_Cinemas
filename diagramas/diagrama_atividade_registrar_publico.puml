@@ -1,0 +1,33 @@
+@startuml diagrama_atividade_registrar_publico
+title Diagrama de Atividade — Registrar Público de Sessão
+
+skinparam ActivityBackgroundColor #DEEAF1
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam ActivityDiamondBorderColor #D6A800
+skinparam ArrowColor #2E75B6
+skinparam ArrowThickness 2
+skinparam StartColor #1F4E79
+skinparam EndColor #1F4E79
+
+start
+
+:Funcionário acessa o menu de Sessões;
+
+:Seleciona a opção "Registrar Público";
+
+:Informa ID da sessão e\nquantidade de público;
+
+if (Quantidade >= 0?) then (sim)
+    :SessaoService valida\na quantidade;
+    :SessaoRepository executa\nUPDATE acumulando público;
+    :Exibe mensagem:\n"Público registrado com sucesso!";
+else (não)
+    :Exibe erro:\n"Quantidade não pode ser negativa.";
+endif
+
+:Retorna ao menu de Sessões;
+
+stop
+
+@enduml

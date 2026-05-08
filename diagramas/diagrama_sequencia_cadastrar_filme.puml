@@ -1,0 +1,53 @@
+@startuml diagrama_sequencia_cadastrar_filme
+title Diagrama de Sequência — Cadastrar Filme
+
+skinparam SequenceActorBackgroundColor #DEEAF1
+skinparam SequenceActorBorderColor #1F4E79
+skinparam SequenceParticipantBackgroundColor #EBF3FB
+skinparam SequenceParticipantBorderColor #2E75B6
+skinparam SequenceArrowColor #2E75B6
+skinparam SequenceArrowThickness 2
+skinparam DatabaseBackgroundColor #FFF2CC
+skinparam DatabaseBorderColor #D6A800
+skinparam SequenceLifeLineBorderColor #2E75B6
+
+actor        "Funcionário"     as funcionario
+participant  "CinemaView"      as view
+participant  "FilmeController" as controller
+participant  "FilmeService"    as service
+participant  "FilmeRepository" as repository
+database     "SQLite"          as db
+
+funcionario -> view         : seleciona "Cadastrar Filme"
+view        -> funcionario  : solicita título, diretor, gênero, duração
+
+funcionario -> view         : informa os dados
+view        -> controller   : cadastrar_filme(titulo, diretor, genero, duracao)
+
+controller  -> service      : cadastrar_filme(titulo, diretor, genero, duracao)
+
+activate service
+service     -> service      : validar título e diretor não vazios
+service     -> service      : validar duração > 0
+
+alt dados inválidos
+    service --> controller  : raise ValueError(mensagem)
+    controller -> view      : mostrar_mensagem("Erro: ...")
+    view       -> funcionario : exibe mensagem de erro
+else dados válidos
+    service     -> service      : cria objeto Filme(titulo, diretor, genero, duracao)
+    service     -> repository   : salvar(filme)
+    deactivate service
+
+    activate repository
+    repository  -> db           : INSERT INTO filmes (titulo, diretor, genero, duracao_min)\nVALUES (?, ?, ?, ?)
+    db          --> repository  : OK — rowid gerado
+    deactivate repository
+
+    repository  --> service     : retorno implícito
+    service     --> controller  : retorno (sem exceção = sucesso)
+    controller  -> view         : mostrar_mensagem("Filme cadastrado com sucesso!")
+    view        -> funcionario  : exibe "Filme cadastrado com sucesso!"
+end
+
+@enduml

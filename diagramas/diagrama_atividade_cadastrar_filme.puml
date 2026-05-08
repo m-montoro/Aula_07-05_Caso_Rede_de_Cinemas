@@ -1,0 +1,37 @@
+@startuml diagrama_atividade_cadastrar_filme
+title Diagrama de Atividade — Cadastrar Filme
+
+skinparam ActivityBackgroundColor #DEEAF1
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam ActivityDiamondBorderColor #D6A800
+skinparam ArrowColor #2E75B6
+skinparam ArrowThickness 2
+skinparam StartColor #1F4E79
+skinparam EndColor #1F4E79
+
+start
+
+:Funcionário acessa o menu de Filmes;
+
+:Seleciona a opção "Cadastrar Filme";
+
+:Informa título, diretor, gênero e duração (minutos);
+
+if (Título e diretor\npreenchidos?) then (sim)
+    if (Duração > 0?) then (sim)
+        :FilmeService cria\nobjeto Filme;
+        :FilmeRepository persiste\nno banco SQLite;
+        :Exibe mensagem:\n"Filme cadastrado com sucesso!";
+    else (não)
+        :Exibe erro:\n"Duração deve ser maior que zero.";
+    endif
+else (não)
+    :Exibe erro:\n"Título e diretor são obrigatórios.";
+endif
+
+:Retorna ao menu de Filmes;
+
+stop
+
+@enduml

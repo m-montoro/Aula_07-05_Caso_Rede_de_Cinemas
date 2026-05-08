@@ -1,0 +1,37 @@
+@startuml diagrama_casos_de_uso
+title Sistema de Rede de Cinemas — Diagrama de Casos de Uso
+
+skinparam ActorBackgroundColor #DEEAF1
+skinparam ActorBorderColor #1F4E79
+skinparam UsecaseBackgroundColor #EBF3FB
+skinparam UsecaseBorderColor #2E75B6
+skinparam UsecaseFontSize 12
+skinparam ArrowColor #2E75B6
+
+left to right direction
+
+actor "Funcionário /\nAdministrador" as funcionario
+actor "Espectador" as espectador
+
+rectangle "Sistema de Rede de Cinemas" {
+    usecase "UC01\nCadastrar Filme"            as UC01
+    usecase "UC02\nListar Filmes"              as UC02
+    usecase "UC03\nCadastrar Sessão"           as UC03
+    usecase "UC04\nListar Sessões"             as UC04
+    usecase "UC05\nRegistrar Público"          as UC05
+    usecase "UC06\nConsultar Total de Público\npor Filme" as UC06
+}
+
+funcionario --> UC01
+funcionario --> UC02
+funcionario --> UC03
+funcionario --> UC04
+funcionario --> UC05
+funcionario --> UC06
+
+espectador --> UC02
+espectador --> UC04
+
+UC03 ..> UC01 : <<include>>\nexige filme cadastrado
+
+@enduml

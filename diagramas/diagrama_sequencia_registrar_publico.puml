@@ -1,0 +1,51 @@
+@startuml diagrama_sequencia_registrar_publico
+title Diagrama de Sequência — Registrar Público de Sessão
+
+skinparam SequenceActorBackgroundColor #DEEAF1
+skinparam SequenceActorBorderColor #1F4E79
+skinparam SequenceParticipantBackgroundColor #EBF3FB
+skinparam SequenceParticipantBorderColor #2E75B6
+skinparam SequenceArrowColor #2E75B6
+skinparam SequenceArrowThickness 2
+skinparam DatabaseBackgroundColor #FFF2CC
+skinparam DatabaseBorderColor #D6A800
+skinparam SequenceLifeLineBorderColor #2E75B6
+
+actor        "Funcionário"      as funcionario
+participant  "CinemaView"       as view
+participant  "SessaoController" as controller
+participant  "SessaoService"    as service
+participant  "SessaoRepository" as repository
+database     "SQLite"           as db
+
+funcionario -> view        : seleciona "Registrar Público"
+view        -> funcionario : solicita ID da sessão e quantidade
+
+funcionario -> view        : informa sessao_id e quantidade
+view        -> controller  : registrar_publico(sessao_id, quantidade)
+
+controller  -> service     : registrar_publico(sessao_id, quantidade)
+
+activate service
+service     -> service     : validar quantidade >= 0
+
+alt quantidade negativa
+    service --> controller : raise ValueError("Quantidade não pode ser negativa.")
+    controller -> view     : mostrar_mensagem("Erro: ...")
+    view       -> funcionario : exibe mensagem de erro
+else quantidade válida
+    service    -> repository  : registrar_publico(sessao_id, quantidade)
+    deactivate service
+
+    activate repository
+    repository -> db          : UPDATE sessoes\nSET publico = publico + ?\nWHERE id = ?
+    db         --> repository : OK — linhas afetadas
+    deactivate repository
+
+    repository --> service    : retorno implícito
+    service    --> controller : retorno (sem exceção = sucesso)
+    controller -> view        : mostrar_mensagem("Público registrado com sucesso!")
+    view       -> funcionario : exibe "Público registrado com sucesso!"
+end
+
+@enduml
