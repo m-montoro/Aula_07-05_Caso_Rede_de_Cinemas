@@ -116,7 +116,3 @@ Os diagramas estão na pasta `/diagramas` no formato `.puml` (PlantUML):
 - **Espectador** — consulta filmes em cartaz e horários de sessões
 
 ---
-
-## 📄 Licença
-
-Projeto acadêmico — uso educacional.
